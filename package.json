@@ -1,0 +1,63 @@
+{
+  "name": "upload_angular",
+  "version": "2.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-js": "watchify client/app.js -o public/js/build.js",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HECNT/angular-node-multer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HECNT/angular-node-multer/issues"
+  },
+  "homepage": "https://github.com/HECNT/angular-node-multer#readme",
+  "dependencies": {
+    "alasql": "^0.6.5",
+    "alerts": "^0.1.3",
+    "angular": "1.5.0",
+    "angular-animate": "^1.6.4",
+    "angular-aria": "^1.6.4",
+    "angular-material": "^1.1.4",
+    "angular-utils-pagination": "^0.11.1",
+    "body-parser": "^1.17.1",
+    "chart.js": "^2.9.4",
+    "connect-redis": "^3.4.2",
+    "cookie-parser": "^1.4.3",
+    "crypto-js": "^4.0.0",
+    "csv-parse": "^4.15.1",
+    "csvtojson": "^2.0.10",
+    "express": "^4.15.2",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.4",
+    "formidable": "^1.1.1",
+    "iconv": "^3.0.0",
+    "jquery": "^3.2.1",
+    "jsonwebtoken": "^8.2.0",
+    "jspdf": "^2.3.0",
+    "jwt-simple": "^0.5.1",
+    "moment": "^2.21.0",
+    "mongodb": "^2.2.26",
+    "mssql": "^6.2.0",
+    "multer": "^1.3.0",
+    "mysql": "^2.14.0",
+    "neat-csv": "^6.0.1",
+    "node-csv": "^0.1.2",
+    "nodemon": "^1.19.3",
+    "redis": "^2.8.0",
+    "socket.io": "^2.0.4",
+    "sweetalert": "^2.1.0",
+    "sweetalert2": "^9.17.0"
+  },
+  "devDependencies": {
+    "browserify": "13.0.0",
+    "uglifyify": "3.0.1",
+    "watchify": "3.7.0"
+  }
+}

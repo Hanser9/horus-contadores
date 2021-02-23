@@ -1,0 +1,260 @@
+<div ng-controller="homeCtrl" ng-init="init('{{url}}', {{id_tipo_user}})">
+
+    {{> spinner }}
+      <div class="wrapper ">
+        {{!-- {{> nav}} --}}
+        <div class="main-panel">
+        {{> navBar}}
+        <div class="content">
+            <div class="row">
+                <div class="col-md-6" ng-show="showFile">
+                    <div class="card ">
+                        <div class="card-header ">
+                            <h6 class="card-title">Seleccionar archivo</h5>
+                        </div>
+                        <div class="card-body ">
+                            <p style="color: green;">Cliente:</p>
+                            <select class="form-control" ng-model="filtro.cliente">
+                                <option value="1">Seleccionar uno...</option>
+                                <option ng-repeat="x in clientes" value="{[ x.id_user ]}">{[ x.nombre ]}</option>
+                            </select>
+                            <input type="file" file-model="file" accept=".csv">
+                            <button class="btn btn-success" ng-click="btnCargaArchivo('{{usuario}}')" style="float: right;">Subir archivo</button>
+                        </div>
+                    </div>
+                </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6" ng-show="showData">
+                        <div class="card card-stats">
+                            <div class="card-body ">
+                                <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <div class="numbers">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Modelo:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.model]}</p>                                    
+                                        </div>
+                                        <hr>
+                                        <div class="numbers" ng-show="showFile">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Contador Color:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.contadorColor]}</p>                                    
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-8">
+                                        <div class="numbers">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Numero de serie:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.n_serie]}<p>
+                                        </div>
+                                        <hr>
+                                        <div class="numbers" ng-show="showFile">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Contador B/N:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.contadorBn]}</p>
+                                            <p class="card-title" style="font-size: 15px; color: green; padding-top:20px"></p>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" ng-show="!showFile">
+                    <div class="card ">
+                        <div class="card-body ">
+                            <div class="row">
+                                    <div class="col-6 col-md-4">
+                                        <div class="numbers" ng-show="showFile">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Modelo:</p>
+                                            <p class="card-title" style="font-size: 15px; color: green;">{[info.model]}</p>                                    
+                                        </div>
+                                        <div class="numbers">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Contador Color:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.contadorColor]}</p>                                    
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-8">
+                                        <div class="numbers" ng-show="showFile">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Numero de serie:</p>
+                                            <p class="card-title" style="font-size: 15px; color: green;">{[info.n_serie]}<p>
+                                        </div>
+                                        <div class="numbers">
+                                            <p class="card-category" style="font-size: 15px; color: green;">Contador B/N:</p>
+                                            <p class="card-title" style="font-size: 15px; color: black;">{[info.contadorBn]}</p>
+                                            <p class="card-title" style="font-size: 15px; color: green; padding-top:2px"></p>                                    
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>                
+            </div>
+
+
+            <div ng-show="showData">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="card ">
+                        <div id="acordeon">
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-border panel-default">
+                                        <a data-toggle="collapse" href="#collapseOne">
+                                            <div class="panel-heading">
+                                                <div class="card-header ">
+                                                    <h7 class="card-title">Rango de fechas:</h7>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div id="collapseOne" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <p style="color: green;">Desde:</p>
+                                                            <input type="date" ng-model="filtro.fechaIni">
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p style="color: green;">hasta:</p>
+                                                            <input type="date" ng-model="filtro.fechaFin">
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <button class="btn btn-success" ng-click="btnFiltraRango()">    aplicar     </button>
+                                                            {{!-- <button class="btn btn-warning" ng-click="btnFiltraRango(1)" ng-show="filtro.validaRango">    Eliminar filtro     </button> --}}
+                                                        </div>
+                                                    </div>                                                
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <div class="card ">
+                        <div id="acordeon">
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-border panel-default">
+                                        <a data-toggle="collapse" href="#dos">
+                                            <div class="panel-heading">
+                                                <div class="card-header ">
+                                                    <h7 class="card-title">Filtros:</h7>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div id="dos" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <p style="color: green;">Usuario:</p>
+                                                            <select class="form-control" ng-model="filtro.user" ng-change="btnFiltraSelect(1)">
+                                                                <option value="1">Ninguno</option>
+                                                                <option ng-repeat="x in info.users" value="{[ x.user_name ]}">{[ x.user_name ]}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p style="color: green;">Computadora:</p>
+                                                            <select class="form-control" ng-model="filtro.computer" ng-change="btnFiltraSelect(2)">
+                                                                <option value="1">Ninguno</option>
+                                                                <option ng-repeat="x in info.computers" value="{[ x.computer_name ]}">{[ x.computer_name ]}</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-lg-4">
+                                                            <p style="color: green;">Trabajo:</p>
+                                                            <select class="form-control" ng-model="filtro.job" ng-change="btnFiltraSelect(3)">
+                                                                <option value="1">Ninguno</option>
+                                                                <option ng-repeat="x in info.jobs" value="{[ x.job_mode ]}">{[ x.job_mode ]}</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>   
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>                    
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <button class="btn btn-success" ng-click="btnGeneretePdf()" style="float: right;">Guardar reporte</button>                        
+                                <h6 class="card-title">Total de registros: {[data.length]}</h6>    
+                            </div>
+                            <div class="card-body ">
+                                
+                                <div class="table-responsive">
+                                    <table id="dataTable" class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Usuario</th>
+                                                <th>Computadora</th>
+                                                <th>Tarjeta</th>
+                                                <th>Trabajo</th>
+                                                <th>Resultado</th>
+                                                <th>Fecha</th>
+                                                <th>Contador B/N</th>
+                                                <th>Contador color</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr dir-paginate="l in data | orderBy : 'end_date' | itemsPerPage: 5" >
+                                                <td> {[l.user_name]} </td>
+                                                <td> {[l.computer_name]} </td>
+                                                <td> {[l.login_name]} </td>
+                                                <td> {[l.job_mode]} </td>
+                                                <td> {[l.result]} </td>
+                                                <td> {[l.start_date]} </td>                                                
+                                                <td> {[l.bn_count]} </td>
+                                                <td> {[l.colour_count]} </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <dir-pagination-controls
+                                        max-size="5"
+                                        direction-links="true"
+                                        boundary-links="true" 
+                                        template-url="{{url}}css/dirPagination.tpl.html"    
+                                    >
+                                    </dir-pagination-controls>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                <h5 class="card-title">Grafica</h5>
+                            </div>
+                            <div class="card-body">
+                                <center>
+                                    <div class="chart-wrapper">
+                                        <canvas id="myChart"></canvas>
+                                    </div>
+                                </center>                                
+                            </div>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <footer class="footer footer-black  footer-white ">
+            <div class="container-fluid">
+            <div class="row">
+                <nav class="footer-nav">
+                </nav>
+                <div class="credits ml-auto">
+                <span class="copyright">
+                    © <script>
+                    document.write(new Date().getFullYear())
+                    </script>, Creado por Horus Network
+                </span>
+                </div>
+            </div>
+            </div>
+        </footer>
+        </div>
+    </div>
+</div>

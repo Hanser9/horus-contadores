@@ -1,0 +1,97 @@
+<div ng-controller="sesionCtrl" ng-init="init('{{url}}')">
+
+	{{> spinner }}
+
+	<div class="limiter" id="loginWeb">
+		<div class="container-login100">
+			<div class="wrap-login100">
+				<form class="login100-form">
+					<span class="login100-form-title p-b-43">
+                        Inicio de sesion
+					</span>
+					
+					
+					<div class="wrap-input100">
+						<label>Usuario:</label>
+						<input class="form-control" type="text" ng-model="data.user">						
+					</div>
+					
+					
+					<div class="wrap-input100">
+						<label>Contraseña:</label>
+						<input class="form-control" type="password" ng-model="data.pass">												
+					</div>
+
+					<div class="flex-sb-m w-full p-t-3 p-b-32">
+						<div>
+							<a href="#" class="txt1">
+								¿Olvidaste tu contraseña?
+							</a>
+						</div>
+					</div>
+			
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn" ng-click="btnEnviarLogin()">
+							Entrar
+						</button>
+					</div>
+					
+					<div class="text-center p-t-46 p-b-20">
+						<span class="txt2">
+							<a href="#">Crear cuenta</a>
+						</span>
+					</div>
+				</form>
+
+				<div class="login100-more" style="background-image: url('{{url}}img/mining.jpg');">
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="limiter" id="loginMovil">
+		<div class="container-login100">
+			<form class="login100-form">
+				<span class="login100-form-title p-b-43">
+					Inicio de sesion
+				</span>
+				
+				
+				<div class="wrap-input100">
+					<label>Usuario:</label>
+					<input class="form-control" type="text" ng-model="data.user">						
+				</div>
+				
+				
+				<div class="wrap-input100">
+					<label>Contraseña:</label>
+					<input class="form-control" type="password" ng-model="data.pass">												
+				</div>
+
+				<div class="flex-sb-m w-full p-t-3 p-b-32">
+					<div>
+						<a href="#" class="txt1">
+							¿Olvidaste tu contraseña?
+						</a>
+					</div>
+				</div>
+		
+
+				<div class="container-login100-form-btn">
+					<button class="login100-form-btn" ng-click="btnEnviarLogin()">
+						Entrar
+					</button>
+				</div>
+				
+				<div class="text-center p-t-46 p-b-20">
+					<span class="txt2">
+						<a href="#">Crear cuenta</a>
+					</span>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
