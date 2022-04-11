@@ -145,21 +145,21 @@
                                                             <p style="color: green;">Usuario:</p>
                                                             <select class="form-control" ng-model="filtro.user" ng-change="btnFiltraSelect(1)">
                                                                 <option value="1">Ninguno</option>
-                                                                <option ng-repeat="x in info.users" value="{[ x.user_name ]}">{[ x.user_name ]}</option>
+                                                                <option ng-repeat="x in info.users | orderBy:'user_name'" value="{[ x.user_name ]}">{[ x.user_name ]}</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <p style="color: green;">Computadora:</p>
                                                             <select class="form-control" ng-model="filtro.computer" ng-change="btnFiltraSelect(2)">
                                                                 <option value="1">Ninguno</option>
-                                                                <option ng-repeat="x in info.computers" value="{[ x.computer_name ]}">{[ x.computer_name ]}</option>
+                                                                <option ng-repeat="x in info.computers | orderBy:'computer_name'" value="{[ x.computer_name ]}">{[ x.computer_name ]}</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-lg-4">
                                                             <p style="color: green;">Trabajo:</p>
                                                             <select class="form-control" ng-model="filtro.job" ng-change="btnFiltraSelect(3)">
                                                                 <option value="1">Ninguno</option>
-                                                                <option ng-repeat="x in info.jobs" value="{[ x.job_mode ]}">{[ x.job_mode ]}</option>
+                                                                <option ng-repeat="x in info.jobs | orderBy:'job_mode'" value="{[ x.job_mode ]}">{[ x.job_mode ]}</option>
                                                             </select>
                                                         </div>
                                                     </div>   
@@ -221,7 +221,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="d-none d-sm-block row">
                     <div class="col-md-12">
                         <div class="card ">
                             <div class="card-header ">

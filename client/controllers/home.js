@@ -3,7 +3,8 @@ var swal = require('sweetalert2')
 var alasql = require('alasql')
 var moment = require('moment')
 var Chart = require('chart.js');
-
+var base64 = require('base-64');
+var JSZip = require('jszip');
 
 angular.module(MODULE_NAME)
 .controller('homeCtrl', ['$scope', 'HomeService', '$timeout', function($scope, HomeService, $timeout) {
@@ -103,32 +104,49 @@ angular.module(MODULE_NAME)
          })   
          $('#spinner').attr('class', 'loaded');
       }else{
+
+
          $scope.filtro.fechaFin = new Date(moment().format())
-         HomeService.enviarArchivo($scope.file, $scope.filtro.cliente)
-         .then(function(res){
-            $scope.showData = true     
-            $scope.data = res.data.res
-            $scope.originalData = res.data.res
-            var users = alasql("SELECT COUNT(user_name), user_name FROM ? GROUP BY user_name", [$scope.originalData] );
-            var computers = alasql("SELECT COUNT(computer_name), computer_name FROM ? GROUP BY computer_name", [$scope.originalData] );
-            var jobs = alasql("SELECT COUNT(job_mode), job_mode FROM ? GROUP BY job_mode", [$scope.originalData] );
-            $scope.info.users = users
-            $scope.info.computers = computers
-            $scope.info.jobs = jobs
-            getContadores() 
-            var contadores = alasql("SELECT TOP 1  model, n_serie, start_date FROM ?", [$scope.data] );    
-            $scope.info.model = contadores[0].model
-            $scope.info.n_serie = contadores[0].n_serie
-            $scope.filtro.fechaIni = new Date(moment(contadores[0].start_date).format())
-            setChart()
-            swal.fire({
-               icon: 'success',
-               title: 'Datos Cargados!',
-               text: 'Modelo: ' + $scope.info.model + ' Serie: ' + $scope.info.n_serie,         
-            })
-            $('#spinner').attr('class', 'loaded');
-         })
-           
+         console.log($scope.file.name)
+         var zip = new JSZip()
+         zip.file($scope.file.name, $scope.file)
+
+         zip.generateAsync({type:"blob",compression: "DEFLATE",
+             compressionOptions: {                  
+                 level: 9
+             }})
+         .then(function(blobdata) {             
+              console.log(blobdata, $scope.filtro.cliente)
+              var data = {
+               user: $scope.filtro.cliente,
+               filename: $scope.file.name
+              }
+              console.log(data)
+              HomeService.enviarArchivo(blobdata, JSON.stringify(data))
+               .then(function(res){
+                  $scope.showData = true     
+                  $scope.data = res.data.res
+                  $scope.originalData = res.data.res
+                  var users = alasql("SELECT COUNT(user_name), user_name FROM ? GROUP BY user_name", [$scope.originalData] );
+                  var computers = alasql("SELECT COUNT(computer_name), computer_name FROM ? GROUP BY computer_name", [$scope.originalData] );
+                  var jobs = alasql("SELECT COUNT(job_mode), job_mode FROM ? GROUP BY job_mode", [$scope.originalData] );
+                  $scope.info.users = users
+                  $scope.info.computers = computers
+                  $scope.info.jobs = jobs
+                  getContadores() 
+                  var contadores = alasql("SELECT TOP 1  model, n_serie, start_date FROM ?", [$scope.data] );    
+                  $scope.info.model = contadores[0].model
+                  $scope.info.n_serie = contadores[0].n_serie
+                  $scope.filtro.fechaIni = new Date(moment(contadores[0].start_date).format())
+                  setChart()
+                  swal.fire({
+                     icon: 'success',
+                     title: 'Datos Cargados!',
+                     text: 'Modelo: ' + $scope.info.model + ' Serie: ' + $scope.info.n_serie,         
+                  })
+                  $('#spinner').attr('class', 'loaded');
+               })
+         });                             
       }           
 
   }
@@ -370,39 +388,81 @@ angular.module(MODULE_NAME)
   }
 
   function btnGeneretePdf(){
+   $('#spinner').attr('class', 'loading');  
    var data = $scope.data
+   var info = $scope.info
+   console.log(data, info, '<<<<<<<<')
    var dataTable = []
+   var dataTableUser = []
+   var dataTableComputer = []
    var table = []   
-   for(var key in data){
-      table.push(data[key].user_name)
-      table.push(data[key].computer_name)
-      table.push(data[key].login_name)
-      table.push(data[key].job_mode)
-      table.push(data[key].result)
-      table.push(data[key].start_date)
-      table.push(data[key].bn_count)
-      table.push(data[key].colour_count)
+   var img = new Image();
+   img.src = '../../img/makicop.png'; // bn_count  colour_count
+   var job_mode = alasql("SELECT job_mode, SUM(case when bn_count > 0 then bn_count else 0 end) as total_bn, SUM(case when colour_count > 0 then colour_count else 0 end) as total_color FROM ? GROUP BY job_mode", [data] );
+   var usuario = alasql("SELECT user_name, SUM(case when bn_count > 0 then bn_count else 0 end) as total_bn, SUM(case when colour_count > 0 then colour_count else 0 end) as total_color FROM ? GROUP BY user_name", [data] );
+   var computadora = alasql("SELECT computer_name, SUM(case when bn_count > 0 then bn_count else 0 end) as total_bn, SUM(case when colour_count > 0 then colour_count else 0 end) as total_color FROM ? GROUP BY computer_name", [data] );
+   console.log(job_mode, 'job_mode')
+   for(var key in job_mode){
+      table.push(job_mode[key].job_mode)
+      table.push(job_mode[key].total_bn)
+      table.push(job_mode[key].total_color)
       dataTable.push(table)
+      table = []
+   }
+   for(var key in usuario){
+      table.push(usuario[key].user_name)
+      table.push(usuario[key].total_bn)
+      table.push(usuario[key].total_color)
+      dataTableUser.push(table)
+      table = []
+   }
+   for(var key in computadora){
+      table.push(computadora[key].computer_name)
+      table.push(computadora[key].total_bn)
+      table.push(computadora[key].total_color)
+      dataTableComputer.push(table)
       table = []
    }
    console.log(dataTable);
    var user = $scope.filtro.user === "1" ? 'Ninguno' : $scope.filtro.user
    var computer = $scope.filtro.computer === "1" ? 'Ninguno' : $scope.filtro.computer
    var job = $scope.filtro.job === "1" ? 'Ninguno' : $scope.filtro.job
-   var doc = new jsPDF();
-   doc.setFontSize(14);
-   doc.text(20,20, 'Horus Network - Contadores, fecha de creacion: ' + moment().format('YYYY-MM-DD'))
-   doc.text(20,30, 'Modelo: ' + $scope.info.model + ' Numero de serie: ' + $scope.info.n_serie)
-   doc.text(20,40, 'Contador Total B/N: ' + $scope.info.contadorBn + ' Contador total Color: ' + $scope.info.contadorColor)
-   doc.text(20,50, 'Desde: ' + moment($scope.filtro.fechaIni).format('YYYY-MM-DD') + ' Hasta: ' + moment($scope.filtro.fechaFin).format('YYYY-MM-DD'))
-   doc.text(20,60, 'Usuario: ' +  user  + ' Computadora: ' + computer + ' Trabajo:' + job)
-   var columns = ["Usuario", "Computadora", "Tarjeta", "Trabajo", "Resultado", "Fecha", "B/N", "Color"];;
 
-   doc.autoTable(columns,dataTable,
-   { margin:{ top: 70 }}
-   );
-   //doc.save('reporteContador-' + $scope.info.model + '-' + $scope.info.n_serie + '-' + moment().format('YYYY/MM/DD') + '.pdf')
-   doc.save('reporteContador-' + computer + '-' + moment().format('YYYY/MM/DD') + '.pdf')
+   var doc = new jsPDF();
+   img.onload = function(){
+      doc.setFontSize(14);   
+      doc.addImage(img, 'PNG', 10, 2);
+      var imgSharp = new Image();
+      imgSharp.src = '../../img/sharp.png'
+      imgSharp.onload = function() {
+         doc.addImage(imgSharp, 'PNG', 170, 2);
+         doc.text(85,20, 'Distribuidor autorizado')
+         doc.line(2, 25, 205, 25);
+         doc.text(20,40, 'Makicop - Reporte de contadores, fecha de creacion: ' + moment().format('YYYY-MM-DD'))
+         doc.text(20,50, 'Modelo: ' + $scope.info.model + ', Numero de serie: ' + $scope.info.n_serie)
+         doc.text(20,60, 'Contador Total B/N: ' + $scope.info.contadorBn + ', Contador total Color: ' + $scope.info.contadorColor)
+         doc.text(20,70, 'Filtro de fecha Desde: ' + moment($scope.filtro.fechaIni).format('YYYY-MM-DD') + ', Hasta: ' + moment($scope.filtro.fechaFin).format('YYYY-MM-DD'))
+         doc.text(20,80, 'Filtros aplicados (Usuario: ' +  user  + ' Computadora: ' + computer + ' Trabajo:' + job + ')')
+         doc.line(20,85, 200, 85);
+         doc.text(40,100, 'Detalles por modo de trabajo, por usuario y por computadora')
+         var columns = ["Modo de trabajo", "Contador B/N", "Contador Color"];
+
+         doc.autoTable(columns,dataTable,
+         { margin:{ top: 110 }}
+         );
+         let finalY = doc.lastAutoTable.finalY + 50;
+         console.log(finalY)
+         var columns = ["Usuario", "Contador B/N", "Contador Color"];
+         doc.autoTable(columns,dataTableUser);
+         let finalY2 = doc.lastAutoTable.finalY + 50;
+         console.log(finalY2)
+         var columns = ["Computadora", "Contador B/N", "Contador Color"];
+         doc.autoTable(columns,dataTableComputer);
+         //doc.save('reporteContador-' + $scope.info.model + '-' + $scope.info.n_serie + '-' + moment().format('YYYY/MM/DD') + '.pdf')
+         doc.save('reporteContador-' + computer + '-' + moment().format('YYYY/MM/DD') + '.pdf')
+         $('#spinner').attr('class', 'loaded');
+      };            
+   };   
   }
 
 

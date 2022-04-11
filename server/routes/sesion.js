@@ -12,6 +12,7 @@ function sendLogin(req, res){
     if(result.err){
         res.json(result)
     }else{
+      console.log(result.res[0], '<<<<<<<<<<<<<<<<<<<<');
         req.session.usuario = result.res[0]
         res.json(result)
     }    

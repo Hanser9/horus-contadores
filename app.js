@@ -16,7 +16,7 @@ var helpers         = require('./server/modules/helpers')
 var fs              = require('fs')
 var http            = helpers.isProduccion() ? require('http') : require('https')
 
-// CONFIGURAR HTTPS
+// CONFIGURAR HTTPSpruebaipad
 // if (!helpers.isProduccion()) {
 //     console.log('Ambiente de pruebas')
 //     server = http.createServer({

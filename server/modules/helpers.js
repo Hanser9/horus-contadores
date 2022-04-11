@@ -1,8 +1,8 @@
 module.exports.isProduccion = function() {
-  return false
+  return true
 }
 
 module.exports.getUrl = function() {
-  var produccion = false
-  return produccion ? "https://hazher.com.mx/contadores/" : "http://localhost:3004/";  
+  var produccion = true
+  return produccion ? "http://104.236.194.47:3004/" : "http://192.168.1.12:3004/";  
 }

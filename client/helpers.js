@@ -1,7 +1,7 @@
 this.getProduccion = function() {
-  return false;
+  return true;
 }
 
 this.getUrl = function() {
-  return this.getProduccion() ? "https://hazher.com.mx/contadores/" : "http://localhost:3004";
+  return this.getProduccion() ? "http://104.236.194.47:3004" : "http://192.168.1.12:3004";
 }

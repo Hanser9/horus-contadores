@@ -5,6 +5,7 @@ var fs             = require('fs');
 var multer         = require('multer');
 var path           = require('path')
 var moment         = require('moment')
+var JSZip = require('jszip');
 
 var storage = multer.diskStorage({
     destination: __dirname + '/../../public/upload/',
@@ -33,14 +34,37 @@ function cerrarSesion(req, res){
 
 function sendFile(req, res){    
     var sesion = req.session.usuario;
-    var d = req.file
-    var i = req.body.user
-    var i = {id_user: i}
-    console.log(i, '<-------body');
-    ctrl.sendFile(d, i)
-    .then(function (result) {
-          res.json(result)   
-    })
+    var i = JSON.parse(req.body.user)
+    var d = {
+        filename: i.filename 
+    }    
+    var i = {id_user: i.user}
+    var filePath = __dirname + '/../../public/upload/blob-' + moment().format('YY-MM-DD');
+
+    fs.readFile(filePath, function(err, data) {
+        if (!err) {
+            var zip = new JSZip();
+            zip.loadAsync(data).then(function(contents) {
+                Object.keys(contents.files).forEach(function(filename) {
+                    zip.file(filename).async('nodebuffer').then(function(content) {
+                        var dest = __dirname + '/../../public/upload/' + filename;
+                        fs.writeFileSync(dest, content);
+                        fs.unlink(filePath, (err) => {
+                          if (err) {
+                            console.error(err)
+                            return
+                          }
+
+                          ctrl.sendFile(d, i)
+                            .then(function (result) {
+                                  res.json(result)   
+                            })
+                        })
+                    });
+                });
+            });
+        }
+    });
 }
 
 function getClientes(req, res){ 

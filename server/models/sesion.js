@@ -1,6 +1,9 @@
 var mssql = require("mssql")
 var config = {
-    //stringConnection
+    user: 'sa',
+    password: 'p146',
+    server: '104.236.194.47',
+    database: 'contadores'
 };
 
 module.exports = {

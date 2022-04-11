@@ -6,6 +6,7 @@ var Url = helpers.getUrl()
 router.get('/', function(req, res) {      
   console.log(Url)
   var sesion = req.session.usuario;
+  console.log(sesion, 'sesion <<<<<<<<<<<<<<<')
   if(sesion === undefined){  
     res.redirect('login')
   }else if(sesion.id_tipo_user === 4){

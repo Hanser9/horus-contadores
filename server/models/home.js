@@ -1,7 +1,10 @@
 var moment = require('moment')
 var mssql = require("mssql")
 var config = {
-    //stringConnection
+    user: 'sa',
+    password: '',
+    server: '104.236.194.47',
+    database: 'contadores'
 };
 
 module.exports = {
@@ -23,7 +26,7 @@ function sendFile (f, d, i) {
                   ([path], nombre, fecha, maquina, n_serie, id_user)
                   VALUES('/public/upload/', '${f.filename}', '${moment().format('YYYY-MM-DD')}', '${i.modelo}', '${i.n_serie}', ${d.id_user});                
                               `;
-                console.log(query, '\n Query ejecutado')
+                //console.log(query, '\n Query ejecutado')
                 var request = new mssql.Request();
                 request.query(query,
                     function (err, recordset) {
@@ -55,7 +58,7 @@ function getClientes () {
                 AND
                   a.id_user_type = 2;               
                             `;
-              console.log(query, '\n Query ejecutado')
+              //console.log(query, '\n Query ejecutado')
               var request = new mssql.Request();
               request.query(query,
                   function (err, recordset) {
@@ -87,7 +90,7 @@ function getArchivo (d) {
                 ORDER BY 
                   id_file DESC;               
                             `;
-              console.log(query, '\n Query ejecutado')
+              //console.log(query, '\n Query ejecutado')
               var request = new mssql.Request();
               request.query(query,
                   function (err, recordset) {
